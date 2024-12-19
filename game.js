@@ -161,59 +161,93 @@ function draw() {
 }
 
 function moveSnake() {
-  if (gameOver) return;  // If the game is over, don't move the snake
+    // If game is already over, don't process any more moves
+    if (gameOver) return;
 
-  let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+    let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-  // Check for collision with walls - make sure to check against exact canvas boundaries
-  if (head.x < 0 || head.x + gridSize > canvas.width || head.y < 0 || head.y + gridSize > canvas.height) {
-    endGame();
-    return;
-  }
-
-  // Check for collision with itself - check from index 1 since head can't collide with itself
-  for (let i = 1; i < snake.length; i++) {
-    if (head.x === snake[i].x && head.y === snake[i].y) {
-      endGame();
-      return;
+    // Check for collision with walls
+    if (head.x < 0 || head.x + gridSize > canvas.width || head.y < 0 || head.y + gridSize > canvas.height) {
+        endGame();
+        return;
     }
-  }
 
-  // Only add new head if we haven't hit anything
-  snake.unshift(head);
+    // Check for collision with itself
+    for (let i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+            endGame();
+            return;
+        }
+    }
 
-  // Check if the snake has eaten the food
-  if (head.x === food.x && head.y === food.y) {
-    score += 1;
-    playSound('eat');
-    
-    const scoreContainer = document.getElementById("score-container");
-    scoreContainer.classList.remove('score-pop');
-    void scoreContainer.offsetWidth;
-    scoreContainer.classList.add('score-pop');
-    
-    generateFood();
-  } else {
-    snake.pop();
-  }
+    try {
+        // Add new head
+        snake.unshift(head);
+
+        // Check if the snake has eaten the food
+        if (head.x === food.x && head.y === food.y) {
+            score += 1;
+            
+            try {
+                playSound('eat');
+                
+                // Animate score
+                const scoreContainer = document.getElementById("score-container");
+                if (scoreContainer) {
+                    scoreContainer.classList.remove('score-pop');
+                    void scoreContainer.offsetWidth;
+                    scoreContainer.classList.add('score-pop');
+                }
+                
+                // Generate new food before next movement
+                generateFood();
+            } catch (error) {
+                console.error("Error handling food collision:", error);
+            }
+        } else {
+            // Only remove tail if we didn't eat food
+            snake.pop();
+        }
+    } catch (error) {
+        console.error("Error in moveSnake:", error);
+        endGame();
+    }
 }
 
 function generateFood() {
-    // Adjust the boundaries to prevent food from spawning outside
-    const maxX = Math.floor((canvas.width - gridSize) / gridSize);
-    const maxY = Math.floor((canvas.height - gridSize) / gridSize);
-    
-    food.x = Math.floor(Math.random() * maxX) * gridSize;
-    food.y = Math.floor(Math.random() * maxY) * gridSize;
-
-    // Randomly select a food image
-    currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
-
-    // Prevent food from appearing where the snake is
-    for (let i = 0; i < snake.length; i++) {
-        if (food.x === snake[i].x && food.y === snake[i].y) {
-            generateFood();  // Try again if food overlaps with the snake
-        }
+    try {
+        const maxX = Math.floor((canvas.width - gridSize) / gridSize);
+        const maxY = Math.floor((canvas.height - gridSize) / gridSize);
+        
+        let attempts = 0;
+        const maxAttempts = 100; // Prevent infinite loops
+        
+        do {
+            food.x = Math.floor(Math.random() * maxX) * gridSize;
+            food.y = Math.floor(Math.random() * maxY) * gridSize;
+            
+            // Check if food overlaps with snake
+            let overlap = false;
+            for (let segment of snake) {
+                if (food.x === segment.x && food.y === segment.y) {
+                    overlap = true;
+                    break;
+                }
+            }
+            
+            if (!overlap) {
+                // Valid position found
+                currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
+                return;
+            }
+            
+            attempts++;
+        } while (attempts < maxAttempts);
+        
+        // If we get here, couldn't find valid position
+        console.warn("Could not find valid food position");
+    } catch (error) {
+        console.error("Error generating food:", error);
     }
 }
 
