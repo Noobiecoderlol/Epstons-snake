@@ -10,7 +10,7 @@ body {
   background-color: black; /* Set background to black */
 
   /* Background image settings */
-  background-image: url("https://raw.githubusercontent.com/your-repo/Background.jpg"); /* Correct raw URL */
+  background-image: url("https://raw.githubusercontent.com/Noobiecoderlol/Epstons-snake/main/Background.jpg"); /* Correct raw URL */
   background-size: cover; /* Cover the entire viewport */
   background-position: center center; /* Center the image */
   background-attachment: fixed; /* Keeps the image fixed while scrolling */
