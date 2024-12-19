@@ -161,8 +161,7 @@ function draw() {
 }
 
 function moveSnake() {
-    // If game is already over, don't process any more moves
-    if (gameOver) return;
+    if (gameOver || !gameStarted) return;
 
     let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
@@ -180,74 +179,56 @@ function moveSnake() {
         }
     }
 
-    try {
-        // Add new head
-        snake.unshift(head);
+    // Add new head
+    snake.unshift(head);
 
-        // Check if the snake has eaten the food
-        if (head.x === food.x && head.y === food.y) {
-            score += 1;
-            
-            try {
-                playSound('eat');
-                
-                // Animate score
-                const scoreContainer = document.getElementById("score-container");
-                if (scoreContainer) {
-                    scoreContainer.classList.remove('score-pop');
-                    void scoreContainer.offsetWidth;
-                    scoreContainer.classList.add('score-pop');
-                }
-                
-                // Generate new food before next movement
-                generateFood();
-            } catch (error) {
-                console.error("Error handling food collision:", error);
-            }
-        } else {
-            // Only remove tail if we didn't eat food
-            snake.pop();
-        }
-    } catch (error) {
-        console.error("Error in moveSnake:", error);
-        endGame();
+    // Check if the snake has eaten the food
+    if (head.x === food.x && head.y === food.y) {
+        score += 1;
+        playSound('eat');
+        
+        // Animate score
+        const scoreContainer = document.getElementById("score-container");
+        scoreContainer.classList.remove('score-pop');
+        void scoreContainer.offsetWidth;
+        scoreContainer.classList.add('score-pop');
+        
+        // Generate new food
+        generateNewFood();
+    } else {
+        snake.pop();
     }
 }
 
-function generateFood() {
-    try {
-        const maxX = Math.floor((canvas.width - gridSize) / gridSize);
-        const maxY = Math.floor((canvas.height - gridSize) / gridSize);
+// Separate function for generating new food
+function generateNewFood() {
+    const maxX = Math.floor((canvas.width - gridSize) / gridSize);
+    const maxY = Math.floor((canvas.height - gridSize) / gridSize);
+    
+    let newFood;
+    let validPosition = false;
+    
+    while (!validPosition) {
+        newFood = {
+            x: Math.floor(Math.random() * maxX) * gridSize,
+            y: Math.floor(Math.random() * maxY) * gridSize
+        };
         
-        let attempts = 0;
-        const maxAttempts = 100; // Prevent infinite loops
+        validPosition = true;
         
-        do {
-            food.x = Math.floor(Math.random() * maxX) * gridSize;
-            food.y = Math.floor(Math.random() * maxY) * gridSize;
-            
-            // Check if food overlaps with snake
-            let overlap = false;
-            for (let segment of snake) {
-                if (food.x === segment.x && food.y === segment.y) {
-                    overlap = true;
-                    break;
-                }
+        // Check if new food position overlaps with snake
+        for (let segment of snake) {
+            if (newFood.x === segment.x && newFood.y === segment.y) {
+                validPosition = false;
+                break;
             }
-            
-            if (!overlap) {
-                // Valid position found
-                currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
-                return;
-            }
-            
-            attempts++;
-        } while (attempts < maxAttempts);
+        }
         
-        // If we get here, couldn't find valid position
-        console.warn("Could not find valid food position");
-    } catch (error) {
-        console.error("Error generating food:", error);
+        if (validPosition) {
+            food = newFood;
+            currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
+            break;
+        }
     }
 }
 
@@ -361,10 +342,6 @@ window.addEventListener('resize', () => {
     y: Math.floor(food.y / gridSize) * gridSize
   };
 });
-
-// Call this to generate the initial food and start the loop
-generateFood();
-gameLoop();
 
 // Ensure the "Play Again" button calls the resetGame function
 document.getElementById("reset-button").onclick = resetGame; // Add an event listener to the button
