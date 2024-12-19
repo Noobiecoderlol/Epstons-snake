@@ -28,7 +28,6 @@
 
     <!-- Links Section below the game title -->
     <div id="links-container">
-        <a href="#" id="contract-address-link">$EPSTON Contract List!</a>
         <a href="https://dexscreener.com/solana/6xcvzdaybghovcnsp14emr3hqekncwgwjkouwtbtae9d" target="_blank" class="text-link">Dexscreener</a>
         <a href="https://t.me/EPSTONisland" target="_blank" class="text-link">Telegram</a>
         <a href="https://x.com/JofreyEpstonSOL" target="_blank">X</a>
@@ -80,19 +79,6 @@
             const linksContainer = document.getElementById("links-container");
             linksContainer.style.display = "none";
         };
-
-        // Handle copying the contract address
-        document.getElementById("contract-address-link").addEventListener("click", function (event) {
-            event.preventDefault();
-            const contactAddress = "GJVNVCfovYFWVQC62J2stXyCrawR5fAsC5HVpmZiaMkY";
-            const textarea = document.createElement("textarea");
-            textarea.value = contactAddress;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-            alert("Contract address copied to clipboard: " + contactAddress);
-        });
 
         // Reset game logic
         document.getElementById("reset-button").addEventListener("click", resetGame);
