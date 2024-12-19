@@ -36,6 +36,8 @@ let gridSize = calculateCanvasSize();  // Initial grid size calculation based on
 
 let score = 1;
 let gameOver = false;  // Flag to check if the game is over
+let gameStarted = false;  // Add this line
+let gameLoopID = null;    // Add this line to track the game loop
 
 // Snake initial position and body (start slightly above the bottom)
 let snake = [{ 
@@ -101,7 +103,7 @@ function playSound(soundName) {
 function startGame() {
     // Reset game state
     gameOver = false;
-    gameStarted = true; // Ensure this line is added
+    gameStarted = true;
     score = 1;
     
     // Reset snake position
@@ -111,14 +113,21 @@ function startGame() {
     }];
     direction = { x: 0, y: -gridSize };
     
-    // Generate initial food
+    // Generate initial food and ensure currentFoodImage is set
+    currentFoodImage = foodImages[0];  // Set default food image
     generateFood();
+    
+    // Clear any existing game loop
+    if (gameLoopID) {
+        clearTimeout(gameLoopID);
+    }
     
     // Start the game loop
     gameLoop();
     
-    // Hide the start message
+    // Hide the start message and game over screen
     document.getElementById("controls-message").style.display = "none";
+    document.getElementById("game-over-container").style.display = "none";
     
     // Show the game container
     document.getElementById("game-container").style.display = "block";
@@ -277,35 +286,25 @@ document.addEventListener('touchmove', function(e) {
 
 // Reset the game
 function resetGame() {
-  if (gameLoopID) {
-    clearTimeout(gameLoopID); // Stop any existing game loop
-  }
-
-  gameOver = false;
-  gameSpeed = initialGameSpeed; // Reset the game speed
-  document.getElementById("game-over-container").style.display = "none"; // Hide the game over message
-  
-  // Reset snake position and direction to start further down and move up
-  snake = [{ 
-    x: Math.floor(canvas.width / 2 / gridSize) * gridSize, 
-    y: Math.floor(canvas.height * 0.7 / gridSize) * gridSize // Start 70% down the canvas
-  }];
-  direction = { x: 0, y: -gridSize }; // Initial direction is UP
-  score = 1; // Reset score to 1
-  
-  generateFood(); // Generate new food
-  gameLoop(); // Restart the game loop with the initial game speed
+    // Stop any existing game loop
+    if (gameLoopID) {
+        clearTimeout(gameLoopID);
+    }
+    
+    // Reset and start a new game
+    startGame();
+    
+    // Restart background music
+    sounds.background.currentTime = 0;
+    sounds.background.play();
 }
 
 // Game loop function
-let gameLoopID;
-let gameStarted = false; // New variable to track if the game has started
-
 function gameLoop() {
-    if (!gameOver && gameStarted) { // Check if the game has started
+    if (!gameOver && gameStarted) {
         moveSnake();
         draw();
-        gameLoopID = setTimeout(gameLoop, gameSpeed); // Schedule next iteration
+        gameLoopID = setTimeout(gameLoop, gameSpeed);
     }
 }
 
