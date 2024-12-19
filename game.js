@@ -49,9 +49,18 @@ let food = { x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize
 
 // Load the snake and food images
 const snakeImage = new Image();
-snakeImage.src = "snake.png";  // Ensure snake.png is the correct size
-const foodImage = new Image();
-foodImage.src = "food.png";    // Ensure food.png is the correct size
+snakeImage.src = "snake.png";
+
+// Load multiple food images
+const foodImages = [];
+for (let i = 1; i <= 5; i++) {
+    const img = new Image();
+    img.src = `food${i}.png`;
+    foodImages.push(img);
+}
+
+// Current food image reference
+let currentFoodImage;
 
 // Variables for touch tracking
 let touchX = 0;
@@ -128,18 +137,18 @@ document.getElementById("start-game-button").addEventListener("click", function(
 
 // Game functions
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
-  // Draw the snake (without resizing the image)
-  for (let i = 0; i < snake.length; i++) {
-    ctx.drawImage(snakeImage, snake[i].x, snake[i].y, gridSize, gridSize);
-  }
+    // Draw the snake
+    for (let i = 0; i < snake.length; i++) {
+        ctx.drawImage(snakeImage, snake[i].x, snake[i].y, gridSize, gridSize);
+    }
 
-  // Draw the food (without resizing the image)
-  ctx.drawImage(foodImage, food.x, food.y, gridSize, gridSize);
+    // Draw the current food image
+    ctx.drawImage(currentFoodImage, food.x, food.y, gridSize, gridSize);
 
-  // Update the score display
-  document.getElementById("score").textContent = `Perv points: ${score}`;  // Display "Perv points" with the score
+    // Update the score display
+    document.getElementById("score").textContent = `Perv points: ${score}`;
 }
 
 function moveSnake() {
@@ -180,16 +189,18 @@ function moveSnake() {
 }
 
 function generateFood() {
-  // Ensure food is placed on the grid (multiples of gridSize)
-  food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
-  food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+    food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+    food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
 
-  // Prevent food from appearing where the snake is
-  for (let i = 0; i < snake.length; i++) {
-    if (food.x === snake[i].x && food.y === snake[i].y) {
-      generateFood();  // Try again if food overlaps with the snake
+    // Randomly select a food image
+    currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
+
+    // Prevent food from appearing where the snake is
+    for (let i = 0; i < snake.length; i++) {
+        if (food.x === snake[i].x && food.y === snake[i].y) {
+            generateFood();  // Try again if food overlaps with the snake
+        }
     }
-  }
 }
 
 function endGame() {
