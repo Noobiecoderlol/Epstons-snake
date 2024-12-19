@@ -199,8 +199,12 @@ function moveSnake() {
 }
 
 function generateFood() {
-    food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
-    food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+    // Adjust the boundaries to prevent food from spawning outside
+    const maxX = Math.floor((canvas.width - gridSize) / gridSize);
+    const maxY = Math.floor((canvas.height - gridSize) / gridSize);
+    
+    food.x = Math.floor(Math.random() * maxX) * gridSize;
+    food.y = Math.floor(Math.random() * maxY) * gridSize;
 
     // Randomly select a food image
     currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
