@@ -165,37 +165,36 @@ function moveSnake() {
 
   let head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-  // Check for collision with walls
-  if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+  // Check for collision with walls - make sure to check against exact canvas boundaries
+  if (head.x < 0 || head.x + gridSize > canvas.width || head.y < 0 || head.y + gridSize > canvas.height) {
     endGame();
-    return; // Add return to prevent further execution
+    return;
   }
 
-  // Check for collision with itself
-  for (let i = 0; i < snake.length; i++) {
+  // Check for collision with itself - check from index 1 since head can't collide with itself
+  for (let i = 1; i < snake.length; i++) {
     if (head.x === snake[i].x && head.y === snake[i].y) {
       endGame();
-      return; // Add return to prevent further execution
+      return;
     }
   }
 
-  // Add the new head to the snake array
+  // Only add new head if we haven't hit anything
   snake.unshift(head);
 
   // Check if the snake has eaten the food
   if (head.x === food.x && head.y === food.y) {
-    score += 1;  // Increase score by 1
+    score += 1;
     playSound('eat');
     
-    // Animate score
     const scoreContainer = document.getElementById("score-container");
-    scoreContainer.classList.remove('score-pop'); // Remove the class
-    void scoreContainer.offsetWidth; // Trigger reflow
-    scoreContainer.classList.add('score-pop'); // Add the class back
+    scoreContainer.classList.remove('score-pop');
+    void scoreContainer.offsetWidth;
+    scoreContainer.classList.add('score-pop');
     
-    generateFood();  // Generate new food after eating
+    generateFood();
   } else {
-    snake.pop();  // Remove the last segment if no food was eaten
+    snake.pop();
   }
 }
 
@@ -215,20 +214,23 @@ function generateFood() {
 }
 
 function endGame() {
-  if (gameOver) return; // Prevent multiple calls to endGame
+  if (gameOver) return;
   
   gameOver = true;
-  gameStarted = false; // Add this line to properly reset game state
+  gameStarted = false;
   
+  // Clear any existing game loop immediately
+  if (gameLoopID) {
+    clearTimeout(gameLoopID);
+    gameLoopID = null;
+  }
+  
+  // Stop and reset sounds
   sounds.background.pause();
   sounds.background.currentTime = 0;
   playSound('gameOver');
   
-  if (gameLoopID) {
-    clearTimeout(gameLoopID);  // Clear the game loop
-  }
-  
-  // Ensure the game over container is shown
+  // Show game over screen
   const gameOverContainer = document.getElementById("game-over-container");
   if (gameOverContainer) {
     gameOverContainer.style.display = "block";
