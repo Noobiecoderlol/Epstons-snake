@@ -10,7 +10,7 @@ body {
   background-color: black; /* Set background to black */
 
   /* Background image settings */
-  background-image: url("https://raw.githubusercontent.com/Noobiecoderlol/Snake-gamez/main/Background.jpg"); /* Correct raw URL */
+  background-image: url("https://raw.githubusercontent.com/your-repo/Background.jpg"); /* Correct raw URL */
   background-size: cover; /* Cover the entire viewport */
   background-position: center center; /* Center the image */
   background-attachment: fixed; /* Keeps the image fixed while scrolling */
@@ -50,22 +50,14 @@ body {
 }
 
 #title-container h1 {
-  font-size: 36px;
+  font-size: 3em;
   margin: 0;
 
   /* Rainbow gradient text effect */
-  background-image: linear-gradient(
-    to right,
-    red,
-    orange,
-    yellow,
-    green,
-    blue,
-    indigo,
-    violet
-  );
-  -webkit-background-clip: text; /* For Chrome, Safari, and newer versions of Edge */
-  color: transparent; /* Make the text transparent so the background gradient shows */
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 #links-container {
@@ -205,4 +197,19 @@ canvas {
     max-width: 500px;
     max-height: 500px;
   }
+}
+
+.glow-button {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border: none;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.glow-button:hover {
+  box-shadow: 0 0 15px #FFA500;
+  transform: scale(1.05);
 }
