@@ -142,16 +142,17 @@ canvas {
 
 /* Game over message container */
 #game-over-container {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.712);
+  background-color: rgba(0, 0, 0, 0.9);
   padding: 30px;
   border-radius: 10px;
   z-index: 1000;
-  width: 300px;
+  width: 80%;
+  max-width: 300px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
