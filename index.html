@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krep the Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Title of the game placed above the canvas -->
+    <div id="title-container" style="display: none;">
+        <h1>Krep the Game</h1>
+    </div>
+
+    <!-- Controls message -->
+    <div id="controls-message" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); color: white; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; text-align: center;">
+        <h1 style="margin-bottom: 60px; text-align: center;">Welcome Kreptard!</h1>
+        <p style="font-size: 24px; color: #ff6600; font-weight: bold; text-transform: uppercase; margin: 20px 0; text-align: center;">
+            ⬆️ USE KEYBOARD ARROW KEYS TO PLAY OR SWIPE ON MOBILE ⬇️
+        </p>
+        <ul style="list-style: none; padding: 0; text-align: center;">
+            <li>🤪 Me brain smooth like butter, game make brain wrinkly! 🧠</li>
+            <li>👾 Press buttons, snake go zoom zoom! Much excite! 🐍</li>
+            <li>🎮 Me professional gamer now, Mom be proud! 🏆</li>
+        </ul>
+        <button id="start-game-button" style="margin-top: 20px; padding: 10px 20px; font-size: 18px; text-align: center; background: #ff6600; color: white; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" onmouseover="this.style.transform='scale(1.1)'; this.style.background='#ff8533';" onmouseout="this.style.transform='scale(1)'; this.style.background='#ff6600';">DONT click me!</button>
+    </div>
+
+    <!-- Links Section below the game title -->
+    <div id="links-container">
+        <a href="#" id="contact-link">Contract address</a>
+        <a href="https://dexscreener.com/solana/adxbwlqk1m7rlprbi8mmfyxqu7hqandgq9c5t8zmbyll" target="_blank" class="text-link">Dexscreener</a>
+        <a href="https://t.me/krepstaonsol" target="_blank" class="text-link">Telegram</a>
+        <a href="https://x.com/KrepBackup" target="_blank">X</a>
+    </div>
+
+    <!-- Score displayed below the title -->
+    <div id="score-container" style="display: none;">
+        <span id="score">Score: 0</span>
+    </div>
+
+    <!-- Game area and Game Over message -->
+    <div id="game-container" style="display: none;">
+        <canvas id="game-board"></canvas>
+
+        <!-- Game Over and Reset Section -->
+        <div id="game-over-container" style="display: none;">
+            <p id="game-over-message">Game over</p>
+            <p id="you-win-message">👉 You loser! 👈</p>
+            <button id="reset-button">PLEASE don't play again!</button>
+        </div>
+    </div>
+
+    <!-- Add JavaScript -->
+    <script>
+        // Handle the Start Game button
+        document.getElementById("start-game-button").addEventListener("click", function () {
+            const controlsMessage = document.getElementById("controls-message");
+            const gameContainer = document.getElementById("game-container");
+            const scoreContainer = document.getElementById("score-container");
+            const linksContainer = document.getElementById("links-container");
+            const titleContainer = document.getElementById("title-container");
+
+            // Hide the controls message
+            controlsMessage.style.display = "none";
+
+            // Show the game area, score, title and links
+            gameContainer.style.display = "block";
+            scoreContainer.style.display = "block"; 
+            linksContainer.style.display = "block";
+            titleContainer.style.display = "block";
+
+            // Start the game loop since startGame() is not defined
+            generateFood();
+            gameLoop();
+        });
+
+        // Hide the links container on page load
+        window.onload = function() {
+            const linksContainer = document.getElementById("links-container");
+            linksContainer.style.display = "none";
+        };
+
+        // Handle copying the contract address
+        document.getElementById("contract-address-link").addEventListener("click", function (event) {
+            event.preventDefault();
+            const contactAddress = "E31D5EnAFrTgnp3GKzc7LBUbbdgXdz3NRHku4s6DV3NG";
+            const textarea = document.createElement("textarea");
+            textarea.value = contactAddress;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            alert("Contract address copied to clipboard: " + contactAddress);
+        });
+
+        // Reset game logic
+        document.getElementById("reset-button").addEventListener("click", resetGame);
+    </script>
+
+    <script src="game.js"></script>
+</body>
+</html>
