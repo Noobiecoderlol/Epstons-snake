@@ -134,6 +134,7 @@ body {
 
 /* Canvas styling */
 canvas {
+  position: relative;
   display: block;
   margin: 0 auto;
   border: 2px solid black;
