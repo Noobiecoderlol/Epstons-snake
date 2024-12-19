@@ -53,16 +53,9 @@ let food = { x: Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize
 const snakeImage = new Image();
 snakeImage.src = "snake.png";
 
-// Load multiple food images
-const foodImages = [];
-for (let i = 1; i <= 5; i++) {
-    const img = new Image();
-    img.src = `food${i}.png`;
-    foodImages.push(img);
-}
-
-// Current food image reference
-let currentFoodImage;
+// Single food image
+const foodImage = new Image();
+foodImage.src = "food.png";
 
 // Variables for touch tracking
 let touchX = 0;
@@ -113,8 +106,7 @@ function startGame() {
     }];
     direction = { x: 0, y: -gridSize };
     
-    // Make sure initial food and images are set
-    currentFoodImage = foodImages[0];
+    // Generate initial food
     generateNewFood();
     
     // Clear any existing game loop
@@ -159,8 +151,8 @@ function draw() {
     }
 
     // Draw food if it exists
-    if (food && currentFoodImage) {
-        ctx.drawImage(currentFoodImage, food.x, food.y, gridSize, gridSize);
+    if (food) {
+        ctx.drawImage(foodImage, food.x, food.y, gridSize, gridSize);
     }
 
     // Update score
@@ -233,7 +225,6 @@ function generateNewFood() {
         
         if (validPosition) {
             food = newFood;
-            currentFoodImage = foodImages[Math.floor(Math.random() * foodImages.length)];
             break;
         }
     }
