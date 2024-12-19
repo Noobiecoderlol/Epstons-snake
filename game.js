@@ -113,23 +113,24 @@ function startGame() {
     }];
     direction = { x: 0, y: -gridSize };
     
-    // Generate initial food and ensure currentFoodImage is set
-    currentFoodImage = foodImages[0];  // Set default food image
-    generateFood();
+    // Make sure initial food and images are set
+    currentFoodImage = foodImages[0];
+    generateNewFood();
     
     // Clear any existing game loop
     if (gameLoopID) {
         clearTimeout(gameLoopID);
     }
     
+    // Draw initial state
+    draw();
+    
     // Start the game loop
     gameLoop();
     
-    // Hide the start message and game over screen
+    // Update display
     document.getElementById("controls-message").style.display = "none";
     document.getElementById("game-over-container").style.display = "none";
-    
-    // Show the game container
     document.getElementById("game-container").style.display = "block";
 }
 
@@ -146,17 +147,23 @@ document.getElementById("start-game-button").addEventListener("click", function(
 
 // Game functions
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw the snake
-    for (let i = 0; i < snake.length; i++) {
-        ctx.drawImage(snakeImage, snake[i].x, snake[i].y, gridSize, gridSize);
+    // Make sure snake exists before drawing
+    if (snake && snake.length > 0) {
+        // Draw the snake
+        for (let i = 0; i < snake.length; i++) {
+            ctx.drawImage(snakeImage, snake[i].x, snake[i].y, gridSize, gridSize);
+        }
     }
 
-    // Draw the current food image
-    ctx.drawImage(currentFoodImage, food.x, food.y, gridSize, gridSize);
+    // Draw food if it exists
+    if (food && currentFoodImage) {
+        ctx.drawImage(currentFoodImage, food.x, food.y, gridSize, gridSize);
+    }
 
-    // Update the score display
+    // Update score
     document.getElementById("score").textContent = `Perv points: ${score}`;
 }
 
