@@ -139,7 +139,7 @@ function draw() {
   ctx.drawImage(foodImage, food.x, food.y, gridSize, gridSize);
 
   // Update the score display
-  document.getElementById("score").textContent = `solami ${score}`;  // Display "solami" with the score
+  document.getElementById("score").textContent = `Perv points: ${score}`;  // Display "Perv points" with the score
 }
 
 function moveSnake() {
