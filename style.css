@@ -155,19 +155,25 @@ canvas {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.9);
   z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 #game-over-message {
   font-size: 28px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   color: white;
   font-weight: bold;
+  width: 100%;
+  text-align: center;
 }
 
 #you-win-message {
   font-size: 20px;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
   color: #ff6600;
+  width: 100%;
+  text-align: center;
 }
 
 #reset-button {
@@ -180,6 +186,7 @@ canvas {
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 #reset-button:hover {
