@@ -158,13 +158,15 @@ function moveSnake() {
 
   // Check for collision with walls
   if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
-    endGame(); // Game over if the snake hits the wall
+    endGame();
+    return; // Add return to prevent further execution
   }
 
   // Check for collision with itself
   for (let i = 0; i < snake.length; i++) {
     if (head.x === snake[i].x && head.y === snake[i].y) {
-      endGame(); // Game over if the snake collides with itself
+      endGame();
+      return; // Add return to prevent further execution
     }
   }
 
@@ -204,12 +206,24 @@ function generateFood() {
 }
 
 function endGame() {
-  gameOver = true;  // Set the gameOver flag to true
+  if (gameOver) return; // Prevent multiple calls to endGame
+  
+  gameOver = true;
+  gameStarted = false; // Add this line to properly reset game state
+  
   sounds.background.pause();
   sounds.background.currentTime = 0;
   playSound('gameOver');
-  clearTimeout(gameLoopID);  // Stop the game loop
-  document.getElementById("game-over-container").style.display = "block"; // Show game over message and button
+  
+  if (gameLoopID) {
+    clearTimeout(gameLoopID);  // Clear the game loop
+  }
+  
+  // Ensure the game over container is shown
+  const gameOverContainer = document.getElementById("game-over-container");
+  if (gameOverContainer) {
+    gameOverContainer.style.display = "block";
+  }
 }
 
 // Add touch event listeners
